@@ -9,14 +9,12 @@ ITEM_NAMES = {
 }
 
 class GildedRose(object):
-
     def __init__(self, items):
-        self.items = [ShopItem(item) for item in items]
+        self.items = [ItemFactory.create_item(item) for item in items]
 
     def update_quality(self):
         for item in self.items:
             item.update_quality()
-
 
 class Item:
     def __init__(self, name, sell_in, quality):
