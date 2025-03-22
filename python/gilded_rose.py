@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from abc import ABC, abstractmethod
 
 ITEM_NAMES = {
     'AGED_BRIE': "Aged Brie",
@@ -15,6 +16,16 @@ class GildedRose(object):
     def update_quality(self):
         for item in self.items:
             item.update_quality()
+
+
+class Item:
+    def __init__(self, name, sell_in, quality):
+        self.name = name
+        self.sell_in = sell_in
+        self.quality = quality
+
+    def __repr__(self):
+        return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
 
 class ItemFactory:
     @staticmethod
@@ -38,10 +49,15 @@ class ShopItem:
     def update_quality(self):
         self.item_type.update_quality()
 
-class AgedBrie:
+class BaseItem(ABC):
     def __init__(self, item):
         self.item = item
 
+    @abstractmethod
+    def update_quality(self):
+        pass
+
+class AgedBrie(BaseItem):
     def update_quality(self):
         if self.item.quality < 50:
             self.item.quality += 1
@@ -49,10 +65,7 @@ class AgedBrie:
         if self.item.sell_in < 0 and self.item.quality < 50:
             self.item.quality += 1
 
-class BackstagePasses:
-    def __init__(self, item):
-        self.item = item
-
+class BackstagePasses(BaseItem):
     def update_quality(self):
         if self.item.quality < 50:
             self.item.quality += 1
@@ -64,17 +77,11 @@ class BackstagePasses:
         if self.item.sell_in < 0:
             self.item.quality = 0
 
-class Sulfuras:
-    def __init__(self, item):
-        self.item = item
-
+class Sulfuras(BaseItem):
     def update_quality(self):
         pass
 
-class RegularItem:
-    def __init__(self, item):
-        self.item = item
-
+class RegularItem(BaseItem):
     def update_quality(self):
         if self.item.quality > 0:
             self.item.quality -= 1
@@ -82,10 +89,7 @@ class RegularItem:
         if self.item.sell_in < 0 and self.item.quality > 0:
             self.item.quality -= 1
 
-class ConjuredItem:
-    def __init__(self, item):
-        self.item = item
-
+class ConjuredItem(BaseItem):
     def update_quality(self):
         if self.item.quality > 0:
             self.item.quality = max(0, self.item.quality - 2)
@@ -93,11 +97,3 @@ class ConjuredItem:
         if self.item.sell_in < 0 and self.item.quality > 0:
             self.item.quality = max(0, self.item.quality - 2)
 
-class Item:
-    def __init__(self, name, sell_in, quality):
-        self.name = name
-        self.sell_in = sell_in
-        self.quality = quality
-
-    def __repr__(self):
-        return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
