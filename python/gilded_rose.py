@@ -92,7 +92,7 @@ class RegularItem(BaseItem):
 class ConjuredItem(BaseItem):
     def update_quality(self) -> None:
         if self.item.quality > 0:
-            self.item.quality -= 2
+            self.item.quality = max(0, self.item.quality - 2)
         self.item.sell_in -= 1
         if self.item.sell_in < 0 and self.item.quality > 0:
-            self.item.quality -= 2
+            self.item.quality = max(0, self.item.quality - 2)
